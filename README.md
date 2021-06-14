@@ -8,7 +8,7 @@
 ### Инструкция по установке: 
 ```
 # Клонировать
-git clone https://github.com/OksanaFedotova/frontend-project-lvl2.git
+git clone https://github.com/sergey712lab/frontend-project-lvl2.git
 # Установить приложение
 make install
 # Установить симлинк для приложения 
@@ -23,5 +23,5 @@ gendiff -h
 [![asciicast](https://asciinema.org/a/CHKjdav0Sh3XrEOQDcxNzFg2S.svg)](https://asciinema.org/a/CHKjdav0Sh3XrEOQDcxNzFg2S)
 
 ### Рекурсивное сравнение 
-[![asciicast](https://asciinema.org/a/AMREVADPEvP43g9BWGqMjysoy.svg)](https://asciinema.org/a/AMREVADPEvP43g9BWGqMjysoyS)
+[![asciicast](https://asciinema.org/a/AMREVADPEvP43g9BWGqMjysoy.svg)](https://asciinema.org/a/AMREVADPEvP43g9BWGqMjysoy)
 
