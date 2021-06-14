@@ -18,3 +18,10 @@ gendiff -h
 ```
 ### Сравнение двух плоских файлов, формат - json, формат вывода - по умолчанию (stylish)
 [![asciicast](https://asciinema.org/a/12moFxSYchW5KdFJ8oLIODaQs.svg)](https://asciinema.org/a/12moFxSYchW5KdFJ8oLIODaQs)
+
+### Сравнение двух YML
+[![asciicast](https://asciinema.org/a/CHKjdav0Sh3XrEOQDcxNzFg2S.svg)](https://asciinema.org/a/CHKjdav0Sh3XrEOQDcxNzFg2S)
+
+### Рекурсивное сравнение 
+[![asciicast](https://asciinema.org/a/AMREVADPEvP43g9BWGqMjysoy.svg)](https://asciinema.org/a/AMREVADPEvP43g9BWGqMjysoyS)
+

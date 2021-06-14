@@ -24,3 +24,8 @@ test('stylish with yml', () => {
   const diff = genDiff(file1Yml, file2Yml);
   expect(diff).toEqual(file1Stylish.trim());
 });
+
+test('stylish with json', () => {
+  const diff = genDiff(file1Json, file2Json);
+  expect(diff).toEqual(file1Stylish.trim());
+});
