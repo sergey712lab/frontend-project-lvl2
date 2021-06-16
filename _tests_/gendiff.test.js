@@ -10,6 +10,7 @@ const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8'
 
 const file1Stylish = readFile('result.txt');
 const filePlain = readFile('plain.txt');
+const fileJson = readFile('json.txt');
 
 const file1Json = getFixturePath('file1.json');
 const file2Json = getFixturePath('file2.json');
@@ -34,4 +35,9 @@ test('stylish with json and yml', () => {
 test('plain', () => {
   const diff = genDiff(file1Json, file2Json, 'plain');
   expect(diff).toEqual(filePlain.trim());
+});
+
+test('json', () => {
+  const diff = genDiff(file1Json, file2Json, 'json');
+  expect(diff).toEqual(fileJson.trim());
 });
