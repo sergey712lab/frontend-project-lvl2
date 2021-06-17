@@ -7,7 +7,7 @@
 
 ### Инструкция по установке: 
 ```
-# Клонировать
+# Клонироватьhj
 git clone https://github.com/sergey712lab/frontend-project-lvl2.git
 # Установить приложение
 make install
