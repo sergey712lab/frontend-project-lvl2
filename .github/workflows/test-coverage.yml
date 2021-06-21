@@ -43,7 +43,6 @@ jobs:
         # Add Code Climate secret key
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          debug: true
         with:
           coverageCommand: make test-coverage
           debug: true
