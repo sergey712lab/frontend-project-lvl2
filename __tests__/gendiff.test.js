@@ -17,13 +17,9 @@ const file2Json = getFixturePath('file2.json');
 const file1Yml = getFixturePath('file1.yml');
 const file2Yml = getFixturePath('file2.yml');
 
-test('stylish with json', () => {
-  const diff = genDiff(file1Json, file2Json);
-  expect(diff).toEqual(file1Stylish.trim());
-});
-
-test('stylish with yml', () => {
-  const diff = genDiff(file1Yml, file2Yml);
+test.each([[file1Json, file2Json], [file1Yml, file2Yml]])
+('stylish', (file1, file2) => {
+  const diff = genDiff(file1, file2);
   expect(diff).toEqual(file1Stylish.trim());
 });
 

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const getStatus = (status) => {
+const formatStatus = (status) => {
   switch (status) {
     case 'nested':
     case 'unchanged':
@@ -44,14 +44,14 @@ const innerMakeStylish = (tree, depthLevel = 1) => {
   const makeFlat = (prop) => {
     if (prop.children) {
       const nestedValue = innerMakeStylish(prop.children, depthLevel + depth);
-      return `${getGaps(gaps)}${getStatus(prop.status)} ${prop.key}: ${nestedValue}`;
+      return `${getGaps(gaps)}${formatStatus(prop.status)} ${prop.key}: ${nestedValue}`;
     }
 
     if (prop.status === 'changed') {
       return `${getGaps(gaps)}- ${prop.key}: ${isObj(prop.valueBefore)}\n${getGaps(gaps)}+ ${prop.key}: ${isObj(prop.valueAfter)}`;
     }
 
-    return `${getGaps(gaps)}${getStatus(prop.status)} ${prop.key}: ${isObj(prop.valueBefore)}`;
+    return `${getGaps(gaps)}${formatStatus(prop.status)} ${prop.key}: ${isObj(prop.valueBefore)}`;
   };
 
   const makeString = tree.map((prop) => makeFlat(prop)).join('\n');
