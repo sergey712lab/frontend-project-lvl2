@@ -8,7 +8,7 @@ const stringify = (value) => {
     return `'${value}'`;
   }
   return String(value);
-};;
+};
 
 const innerMakePlain = (tree, key = '') => {
   const makeFlat = (prop) => {
