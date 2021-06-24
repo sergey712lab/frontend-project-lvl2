@@ -1,4 +1,4 @@
-### Project GenDifff
+### Project GenDiff
 [![Actions Status](https://github.com/sergey712lab/frontend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/sergey712lab/frontend-project-lvl2/actions)
 [![Actions Status](https://github.com/sergey712lab/frontend-project-lvl2/workflows/linter/badge.svg)](https://github.com/sergey712lab/frontend-project-lvl2/actions)
 <a href="https://codeclimate.com/github/sergey712lab/frontend-project-lvl2/maintainability"><img src="https://api.codeclimate.com/v1/badges/8434f0c2879c6280057c/maintainability" /></a>
