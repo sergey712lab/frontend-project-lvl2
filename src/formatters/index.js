@@ -2,12 +2,10 @@ import _ from 'lodash';
 import makePlain from './plain.js';
 import makeStylish from './stylish.js';
 
-const formatJson = (tree) => JSON.stringify(tree);
-
 const formatters = {
   stylish: makeStylish,
   plain: makePlain,
-  json: formatJson,
+  json: JSON.stringify,
 };
 
 const formatData = (tree, format) => {

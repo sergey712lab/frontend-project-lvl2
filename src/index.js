@@ -6,14 +6,14 @@ import parse from './parsers.js';
 
 const getFileData = (filepath) => {
   const data = fs.readFileSync(path.resolve(filepath));
-  const format = path.extname(filepath);
+  const format = path.extname(filepath).substring(1);
   return parse(data, format);
 };
 
 const gendiff = (filepath1, filepath2, formatName = 'stylish') => {
-  const object1 = getFileData(filepath1);
-  const object2 = getFileData(filepath2);
-  const tree = createTree(object1, object2);
+  const data1 = getFileData(filepath1);
+  const data2 = getFileData(filepath2);
+  const tree = createTree(data1, data2);
   const formattedData = formatData(tree, formatName);
   return formattedData;
 };
