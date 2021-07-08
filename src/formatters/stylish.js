@@ -1,62 +1,44 @@
 import _ from 'lodash';
 
-const formatStatus = (status) => {
-  switch (status) {
-    case 'nested':
-    case 'unchanged':
-      return ' ';
-    case 'added':
-      return '+';
-    case 'deleted':
-      return '-';
-    default:
-      throw new Error(`Unknown status: '${status}'!`);
+const getIndent = (n) => ' '.repeat(n);
+
+const stringify = (value, depth = 0) => {
+  if (!_.isObject(value)) {
+    return value;
   }
+  const result = Object.keys(value)
+    .map((key) => `${getIndent(depth + 8)}${key}: ${stringify(value[key], depth + 4)}`);
+  return ['{', ...result, `${getIndent(depth + 4)}}`].join('\n');
 };
 
-const gapDifference = 4;
-const getGaps = (num) => ' '.repeat(num);
-
-const showValues = (value, depthLevel) => {
-  const gaps = depthLevel * gapDifference;
-  const depth = 1;
-  const keys = Object.keys(value);
-  const innerValue = keys.map((key) => {
-    if (_.isObject(value[key])) {
-      return `\n${getGaps(gaps)}${key}: {${showValues(value[key], depthLevel + depth)}\n${getGaps(gaps)}}`;
-    }
-    return `\n${getGaps(gaps)}${key}: ${value[key]}`;
-  });
-  return innerValue.join('');
+const operation = {
+  added: '+ ',
+  removed: '- ',
+  unchanged: '  ',
 };
 
-const innerMakeStylish = (tree, depthLevel = 1) => {
-  const gapAndSign = 2;
-  const depth = 1;
-  const gaps = depthLevel * gapDifference - gapAndSign;
-  const isObj = (value) => {
-    if (Array.isArray(value)) {
-      return `[${value.join(', ')}]`;
-    }
-    return _.isObject(value) ? `{${showValues(value, depthLevel + depth)}\n${getGaps(gaps + gapAndSign)}}` : value;
+const formatDiffs = (tree) => {
+  const iter = (node, depth) => {
+    const result = node.map((item) => {
+      const {
+        key, type, initValue, newValue, children,
+      } = item;
+      switch (type) {
+        case 'added':
+          return `${getIndent(depth + 2)}${operation[type]}${key}: ${stringify(newValue, depth)}`;
+        case 'removed':
+        case 'unchanged':
+          return `${getIndent(depth + 2)}${operation[type]}${key}: ${stringify(initValue, depth)}`;
+        case 'changed':
+          return `${getIndent(depth + 2)}${operation.removed}${key}: ${stringify(initValue, depth)}\n${getIndent(depth + 2)}${operation.added}${key}: ${stringify(newValue, depth)}`;
+        case 'nested':
+          return `${getIndent(depth + 2)}${operation.unchanged}${key}: ${iter(children, depth + 4)}`;
+        default: throw new Error(`Unknown type: ${type}`);
+      }
+    });
+    return ['{', ...result, `${getIndent(depth)}}`].join('\n');
   };
-
-  const makeFlat = (prop) => {
-    if (prop.children) {
-      const nestedValue = innerMakeStylish(prop.children, depthLevel + depth);
-      return `${getGaps(gaps)}${formatStatus(prop.status)} ${prop.key}: ${nestedValue}`;
-    }
-
-    if (prop.status === 'changed') {
-      return `${getGaps(gaps)}- ${prop.key}: ${isObj(prop.valueBefore)}\n${getGaps(gaps)}+ ${prop.key}: ${isObj(prop.valueAfter)}`;
-    }
-
-    return `${getGaps(gaps)}${formatStatus(prop.status)} ${prop.key}: ${isObj(prop.valueBefore)}`;
-  };
-
-  const makeString = tree.map((prop) => makeFlat(prop)).join('\n');
-  const print = `{\n${makeString}\n${getGaps(gaps - gapAndSign)}}`;
-  return print;
+  return iter(tree, 0);
 };
-const makeStylish = (tree) => innerMakeStylish(tree);
-export default makeStylish;
+
+export default formatDiffs;
