@@ -1,44 +1,53 @@
 import _ from 'lodash';
 
-const getIndent = (n) => ' '.repeat(n);
+const stringify = (value, indent, inline = false) => {
+  const arrayToString = arr => arr.map(el => stringify(el, indent, true)).join(', ');
+  const objectToString = obj => Object.entries(obj)
+    .map(([k, v]) => `${' '.repeat(indent + 4)}${k}: ${v}`)
+    .join('\n');
+  const objectToStringInline = obj => Object.entries(obj)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join(', ');
 
-const stringify = (value, depth = 0) => {
-  if (!_.isObject(value)) {
-    return value;
+  if (_.isArray(value)) {
+    return `[${arrayToString(value)}]`;
   }
-  const result = Object.keys(value)
-    .map((key) => `${getIndent(depth + 8)}${key}: ${stringify(value[key], depth + 4)}`);
-  return ['{', ...result, `${getIndent(depth + 4)}}`].join('\n');
+
+  if (_.isPlainObject(value)) {
+    return inline
+      ? `{ ${objectToStringInline(value)} }`
+      : `{\n${objectToString(value)}\n${' '.repeat(indent)}}`;
+  }
+
+  return value;
 };
 
-const operation = {
-  added: '+ ',
-  removed: '- ',
-  unchanged: '  ',
+const tree = (diff, indent = 0) => {
+console.log(diff);
+  const list = diff.map((node) => {
+    switch (node.status) {
+      case 'added':
+        return `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}`;
+      case 'removed':
+        return `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}`;
+      case 'changed':
+        return `${' '.repeat(indent + 2)}  ${node.key}: ${tree(node.children, indent + 4)}`;
+      case 'unchanged':
+        return `${' '.repeat(indent + 2)}  ${node.key}: ${stringify(node.oldValue, indent + 4)}`;
+      case 'updated':
+        return [
+          `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}`,
+          `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}`,
+        ];
+      case 'nested':
+        return `${' '.repeat(indent + 2)}  ${node.key}: ${tree(node.children, indent + 4)}`;
+
+      default:
+        throw new RangeError(`(${node.status}): Invalid value: Only valid value is changed, removed, added, updated, unchanged`);
+     }
+  });
+
+  return `{\n${_.flatten(list).join('\n')}\n${' '.repeat(indent)}}`;
 };
 
-const formatDiffs = (tree) => {
-  const iter = (node, depth) => {
-    const result = node.map((item) => {
-      const {
-        key, type, initValue, newValue, children,
-      } = item;
-      switch (type) {
-        case 'added':
-          return `${getIndent(depth + 2)}${operation[type]}${key}: ${stringify(newValue, depth)}`;
-        case 'removed':
-        case 'unchanged':
-          return `${getIndent(depth + 2)}${operation[type]}${key}: ${stringify(initValue, depth)}`;
-        case 'changed':
-          return `${getIndent(depth + 2)}${operation.removed}${key}: ${stringify(initValue, depth)}\n${getIndent(depth + 2)}${operation.added}${key}: ${stringify(newValue, depth)}`;
-        case 'nested':
-          return `${getIndent(depth + 2)}${operation.unchanged}${key}: ${iter(children, depth + 4)}`;
-        default: throw new Error(`Unknown type: ${type}`);
-      }
-    });
-    return ['{', ...result, `${getIndent(depth)}}`].join('\n');
-  };
-  return iter(tree, 0);
-};
-
-export default formatDiffs;
+export default tree;

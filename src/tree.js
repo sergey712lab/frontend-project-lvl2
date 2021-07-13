@@ -8,7 +8,7 @@ const createTree = (obj1, obj2) => {
 
   const compareContents = (key) => {
     if (!keys2.includes(key)) {
-      return { key, status: 'deleted', valueBefore: obj1[key] };
+      return { key, status: 'removed', valueBefore: obj1[key] };
     }
     if (!keys1.includes(key)) {
       return { key, status: 'added', valueBefore: obj2[key] };
