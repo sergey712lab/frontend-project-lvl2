@@ -3,10 +3,10 @@ import _ from 'lodash';
 const stringify = (value, indent, inline = false) => {
   const arrayToString = arr => arr.map(el => stringify(el, indent, true)).join(', ');
   const objectToString = obj => Object.entries(obj)
-    .map(([k, v]) => `${' '.repeat(indent + 4)}${k}: ${v}`)
+    .map(([k, v]) => `${' '.repeat(indent + 4)}${k}: ${stringify(v, indent + 4)}`)
     .join('\n');
   const objectToStringInline = obj => Object.entries(obj)
-    .map(([k, v]) => `${k}: ${v}`)
+    .map(([k, v]) => `${k}: ${stringify(v, indent + 4)}`)
     .join(', ');
 
   if (_.isArray(value)) {
@@ -23,31 +23,26 @@ const stringify = (value, indent, inline = false) => {
 };
 
 const tree = (diff, indent = 0) => {
-console.log(diff);
   const list = diff.map((node) => {
     switch (node.status) {
       case 'added':
-        return `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}`;
+        return `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.valueAfter, indent + 4)}`;
       case 'removed':
-        return `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}`;
+        return `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.valueBefore, indent + 4)}`;
       case 'changed':
-        return `${' '.repeat(indent + 2)}  ${node.key}: ${tree(node.children, indent + 4)}`;
+        return `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.valueBefore, indent + 4)}\n${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.valueAfter, indent + 4)}`;
       case 'unchanged':
-        return `${' '.repeat(indent + 2)}  ${node.key}: ${stringify(node.oldValue, indent + 4)}`;
-      case 'updated':
-        return [
-          `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}`,
-          `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}`,
-        ];
+        return `${' '.repeat(indent + 2)}  ${node.key}: ${stringify(node.valueBefore, indent + 4)}`;
       case 'nested':
         return `${' '.repeat(indent + 2)}  ${node.key}: ${tree(node.children, indent + 4)}`;
 
       default:
-        throw new RangeError(`(${node.status}): Invalid value: Only valid value is changed, removed, added, updated, unchanged`);
-     }
+        throw new Error(`Unknown status: ${status}`);
+      throw new RangeError(`(${node.status}): Invalid value: Only valid value is changed, removed, added, updated, unchanged`);
+    }
   });
 
-  return `{\n${_.flatten(list).join('\n')}\n${' '.repeat(indent)}}`;
+  return `{\n${list.join('\n')}\n${' '.repeat(indent)}}`;
 };
 
 export default tree;

@@ -13,16 +13,17 @@ const stringify = (value) => {
 const innerMakePlain = (tree, key = '') => {
   const makeFlat = (prop) => {
     switch (prop.status) {
+      case 'added':
+        return `Property '${key}${prop.key}' was added with value: ${stringify(prop.valueAfter)}`;
+      case 'removed':
+        return `Property '${key}${prop.key}' was removed`;
+      case 'changed':
+        return `Property '${key}${prop.key}' was updated. From ${stringify(prop.valueBefore)} to ${stringify(prop.valueAfter)}`;
       case 'unchanged':
         return '';
       case 'nested':
         return innerMakePlain(prop.children, `${key}${prop.key}.`);
-      case 'deleted':
-        return `Property '${key}${prop.key}' was removed`;
-      case 'changed':
-        return `Property '${key}${prop.key}' was updated. From ${stringify(prop.valueBefore)} to ${stringify(prop.valueAfter)}`;
-      case 'added':
-        return `Property '${key}${prop.key}' was added with value: ${stringify(prop.valueBefore)}`;
+      
       default:
         throw new Error(`Unknown status: '${prop.status}'!`);
     }

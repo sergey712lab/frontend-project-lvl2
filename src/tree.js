@@ -11,7 +11,7 @@ const createTree = (obj1, obj2) => {
       return { key, status: 'removed', valueBefore: obj1[key] };
     }
     if (!keys1.includes(key)) {
-      return { key, status: 'added', valueBefore: obj2[key] };
+      return { key, status: 'added', valueAfter: obj2[key] };
     }
     if (_.isEqual(obj1[key], obj2[key])) {
       return { key, status: 'unchanged', valueBefore: obj1[key] };
