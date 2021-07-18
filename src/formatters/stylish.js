@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
 const stringify = (value, indent, inline = false) => {
-  const arrayToString = arr => arr.map(el => stringify(el, indent, true)).join(', ');
-  const objectToString = obj => Object.entries(obj)
+  const arrayToString = (arr) => arr.map((el) => stringify(el, indent, true)).join(', ');
+  const objectToString = (obj) => Object.entries(obj)
     .map(([k, v]) => `${' '.repeat(indent + 4)}${k}: ${stringify(v, indent + 4)}`)
     .join('\n');
-  const objectToStringInline = obj => Object.entries(obj)
+  const objectToStringInline = (obj) => Object.entries(obj)
     .map(([k, v]) => `${k}: ${stringify(v, indent + 4)}`)
     .join(', ');
 
@@ -37,8 +37,7 @@ const tree = (diff, indent = 0) => {
         return `${' '.repeat(indent + 2)}  ${node.key}: ${tree(node.children, indent + 4)}`;
 
       default:
-        throw new Error(`Unknown status: ${status}`);
-      throw new RangeError(`(${node.status}): Invalid value: Only valid value is changed, removed, added, updated, unchanged`);
+        throw new RangeError(`(${node.status}): Invalid value: Only valid value is added, removed, changed, unchanged, nested`);
     }
   });
 

@@ -23,7 +23,7 @@ const innerMakePlain = (tree, key = '') => {
         return '';
       case 'nested':
         return innerMakePlain(prop.children, `${key}${prop.key}.`);
-      
+
       default:
         throw new Error(`Unknown status: '${prop.status}'!`);
     }
